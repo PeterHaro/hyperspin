@@ -27,11 +27,20 @@ const Configuration = function () {
         }
     }
 
-    function validateHyperspinIntegrity() {
+    function validateHyperspinIntegrity(hyperspinInstallPath) {
+        var hash = crypte.createHash("sha256"),
+            stream = fs.createReadStream(this._hyperspinInstallPath);
 
+        stream.on("data", function(data) {
+            hash.update(data, "utf-8")
+        });
+
+        stream.on("end", function () {
+            console.log(hash.digest("hex"));
+        });
     }
 
-    function validateHyperspinPath() { //TODO: Do me differently with the return values
+    function validateHyperspinPath() {
         fs.stat(this._hyperspinInstallPath, function (err, stat) {
             if (err === null) {
                 return true;
@@ -46,7 +55,11 @@ const Configuration = function () {
 
     //GETTERS_AND_SETTERS
     function getHyperspinInstallPath() {
-        return _hyperspinInstallPath;
+        return this._hyperspinInstallPath;
+    }
+
+    function setHyperspinInstallPath(hyperspinInstallPath) {
+        this._hyperspinInstallPath = hyperspinInstallPath;
     }
 
     function getHyperspinVersion() {
@@ -63,8 +76,9 @@ const Configuration = function () {
         populateFromConfigurationFile : populateFromConfigurationFile,
         validateHyperspinPath : validateHyperspinPath,
         getHyperspinInstallPath : getHyperspinInstallPath,
+        setHyperspinInstallPath : setHyperspinInstallPath,
         getHyperspinVersion : getHyperspinVersion,
-        getInstalledEmulators : getInstalledEmulators
+        getInstalledEmulators : getInstalledEmulators,
     }
 
 }();

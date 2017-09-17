@@ -55,10 +55,10 @@
             <div class="file-field input-field">
                 <div class="btn">
                     <span>File</span>
-                    <input type="file">
+                    <input id="hyperspin_input_field" type="file">
                 </div>
                 <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text">
+                    <input id="hyperspin_path" class="file-path validate" type="text">
                 </div>
             </div>
         </form>
@@ -69,10 +69,15 @@
 <script src="../../../node_modules/materialize-css/dist/js/materialize.min.js"></script>
 <script src="ConfigurationPojo.js"></script>
 <script>
-
     Configuration.populateFromConfigurationFile("Configuration.json");
     $(document).ready(function () {
         $('.button-collapse').sideNav({'edge': 'left'});
+        $("#hyperspin_path").change(function() {
+            Configuration.setHyperspinInstallPath(document.getElementById("hyperspin_input_field").files[0].path);
+            if(!Configuration.validateHyperspinPath()) {
+                dialog.showErrorBox("Invalid hyperspin path: ", Configuration.getHyperspinInstallPath());
+            }
+        });
     })
 </script>
 </body>
